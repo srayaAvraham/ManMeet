@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 });
 
 // API routes
-app.get('/', (req, res) => res.send('Hello World!'))
+app.get('/', (req, res) => res.send('Hello World'))
 
 // ...For all the other requests just sends back the Homepage
 app.route("*").get((req, res) => {

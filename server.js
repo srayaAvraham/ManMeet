@@ -2,10 +2,12 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+const User = require('./server/models/user')
 
 
 const app = express()
 const port = process.env.PORT || 3000;
+const dbUrl = process.env.DB_URL || 'mongodb://localhost/manmeet-dev';
 
 // DB connection through Mongoose
 const options = {
@@ -14,7 +16,7 @@ const options = {
 };
 mongoose.Promise = global.Promise;
 // Don't forget to substitute it with your connection string
-mongoose.connect('YOUR_MONGO_CONNECTION', options);
+mongoose.connect(dbUrl, options);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -43,5 +45,33 @@ app.route("*").get((req, res) => {
     res.sendFile('client/dist/index.html', { root: __dirname });
 });
 
+// create a user a new user
+var testUser = new User({
+    username: "jmar777",
+    password: 'Password',
+    email: 'sefw@fnjkf.cje'
+});
+
+// save user to database
+testUser.save(function(err) {
+    if (err) throw err;
+
+// fetch user and test password verification
+User.findOne({ username: 'jmar777' }, function(err, user) {
+    if (err) throw err;
+
+    // test a matching password
+    user.comparePassword('Password123', function(err, isMatch) {
+        if (err) throw err;
+        console.log('Password123:', isMatch); // -&gt; Password123: true
+    });
+
+    // test a failing password
+    user.comparePassword('123Password', function(err, isMatch) {
+        if (err) throw err;
+        console.log('123Password:', isMatch); // -&gt; 123Password: false
+    });
+})
+})
 
 app.listen(port, () => console.log(`listening on port ${port}`))

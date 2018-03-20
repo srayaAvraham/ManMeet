@@ -41,9 +41,12 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => res.send('Hello World'))
 
 // ...For all the other requests just sends back the Homepage
-app.route("*").get((req, res) => {
-    res.sendFile('client/dist/index.html', { root: __dirname });
-});
+// app.route("*").get((req, res) => {
+//     res.sendFile('client/dist/index.html', { root: __dirname });
+// });
+
+var routes = require('./server/routes/userRoutes'); 
+routes(app); //register the route
 
 // create a user a new user
 var testUser = new User({

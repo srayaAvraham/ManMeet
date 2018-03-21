@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
 const User = require('./server/models/user')
+const r = require('./server/routes/userRoutes')
 
 
 const app = express()
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-
+app.use('/',r)
 // API routes
 app.get('/', (req, res) => res.send('Hello World'))
 
@@ -45,8 +46,8 @@ app.get('/', (req, res) => res.send('Hello World'))
 //     res.sendFile('client/dist/index.html', { root: __dirname });
 // });
 
-var routes = require('./server/routes/userRoutes'); 
-routes(app); //register the route
+// var routes = require('./server/routes/userRoutes'); 
+// routes(app); //register the route
 
 // create a user a new user
 var testUser = new User({

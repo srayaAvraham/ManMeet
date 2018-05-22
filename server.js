@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const morgan = require('morgan')
+var passport = require('passport');
 const User = require('./server/models/user')
 const r = require('./server/routes/userRoutes')
 
@@ -27,6 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
+
+app.use(passport.initialize());
+
 // We tell express where to find static assets
 app.use(express.static(__dirname + '/client/dist'));
 
@@ -37,7 +41,7 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-app.use('/',r)
+app.use('/api',r)
 // API routes
 app.get('/', (req, res) => res.sendfile('./client/public/index.html'))
 
@@ -50,32 +54,32 @@ app.get('/', (req, res) => res.sendfile('./client/public/index.html'))
 // routes(app); //register the route
 
 // create a user a new user
-var testUser = new User({
-    username: "jmar777",
-    password: 'Password',
-    email: 'sefw@fnjkf.cje'
-});
+// var testUser = new User({
+//     username: "jmar777",
+//     password: 'Password',
+//     email: 'sefw@fnjkf.cje'
+// });
 
-// save user to database
-testUser.save(function(err) {
-    if (err) throw err;
+// // save user to database
+// testUser.save(function(err) {
+//     if (err) throw err;
 
-// fetch user and test password verification
-User.findOne({ username: 'jmar777' }, function(err, user) {
-    if (err) throw err;
+// // fetch user and test password verification
+// User.findOne({ username: 'jmar777' }, function(err, user) {
+//     if (err) throw err;
 
-    // test a matching password
-    user.comparePassword('Password123', function(err, isMatch) {
-        if (err) throw err;
-        console.log('Password123:', isMatch); // -&gt; Password123: true
-    });
+//     // test a matching password
+//     user.comparePassword('Password123', function(err, isMatch) {
+//         if (err) throw err;
+//         console.log('Password123:', isMatch); // -&gt; Password123: true
+//     });
 
-    // test a failing password
-    user.comparePassword('123Password', function(err, isMatch) {
-        if (err) throw err;
-        console.log('123Password:', isMatch); // -&gt; 123Password: false
-    });
-})
-})
+//     // test a failing password
+//     user.comparePassword('123Password', function(err, isMatch) {
+//         if (err) throw err;
+//         console.log('123Password:', isMatch); // -&gt; 123Password: false
+//     });
+// })
+// })
 
 app.listen(port, () => console.log(`listening on port ${port}`))
